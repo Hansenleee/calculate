@@ -1,0 +1,22 @@
+{
+  "name": "calculate",
+  "version": "1.0.0",
+  "description": "calculate in js",
+  "main": "index.js",
+  "author": "libin",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Hansenleee/calculate.git"
+  },
+  "keywords": [
+    "calculate",
+    "calc"
+  ],
+  "dependencies": {
+    "jest": "^22.0.4"
+  }
+}
