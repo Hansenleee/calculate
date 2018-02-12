@@ -1,3 +1,9 @@
+(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global.bundle = factory());
+}(this, (function () { 'use strict';
+
 /**
  * 解决js处理小数的计算问题
  * 返回链式操作，类似jquery
@@ -17,7 +23,7 @@
  */
 
 // 通用处理函数
-var toString = Object.prototype.toString
+var toString = Object.prototype.toString;
 var _actions = {
   /**
    * 判断是否为数字
@@ -36,7 +42,7 @@ var _actions = {
     if (!_actions.isNumber(num)) {
       return -1
     }
-    const list = num.toString().split('.')
+    const list = num.toString().split('.');
     return list.length === 2 ? list[1].length : 0
   },
   /**
@@ -45,13 +51,13 @@ var _actions = {
    * @return {Number} 返回最小公倍数
    */
   getMultiple: function(...args) {
-    let maxMultiple = 0
+    let maxMultiple = 0;
     args.forEach((num) => {
       if (_actions.isNumber(num)) {
-        const multiples = _actions.getDecimalLength(parseFloat(num))
-        maxMultiple = multiples > maxMultiple ? multiples : maxMultiple
+        const multiples = _actions.getDecimalLength(parseFloat(num));
+        maxMultiple = multiples > maxMultiple ? multiples : maxMultiple;
       }
-    })
+    });
     return maxMultiple
   },
   /**
@@ -63,7 +69,7 @@ var _actions = {
     if (num >= 0) {
       return Math.pow(10, num).toString().substr(1)
     }
-    num = Math.abs(num)
+    num = Math.abs(num);
     return `0.${Math.pow(10, num - 1).toString().substr(1)}`
   },
   /**
@@ -76,9 +82,9 @@ var _actions = {
     if (pow === 0) {
       return num
     }
-    const dLength = _actions.getDecimalLength(num)
-    const numString = num.toString().replace(/\./g, '') + _actions.zeros(pow)
-    const length = numString.length - dLength
+    const dLength = _actions.getDecimalLength(num);
+    const numString = num.toString().replace(/\./g, '') + _actions.zeros(pow);
+    const length = numString.length - dLength;
     if (dLength > 0) {
       if (dLength < pow) {
         return parseInt(numString.substr(0, length), 0)
@@ -97,27 +103,27 @@ var _actions = {
     if (pow === 0) {
       return num
     }
-    const length = _actions.getDecimalLength(num)
-    let numString = num.toString()
-    let numLength = numString.length
+    const length = _actions.getDecimalLength(num);
+    let numString = num.toString();
+    let numLength = numString.length;
     // 有小数点时
     if (length > 0) {
-      numString = numString.replace(/\./g, '')
+      numString = numString.replace(/\./g, '');
       // 整数的长度
-      const intLength = numString.length - length
+      const intLength = numString.length - length;
       // 结果不需要在前面补0的
       if (pow < intLength) {
-        numLength = intLength - pow
+        numLength = intLength - pow;
         return parseFloat(`${numString.substr(0, numLength)}.${numString.substr(numLength)}`)
       }
       // 需要在结果前方补0
-      numLength = pow - intLength
-      const zero = `0.${_actions.zeros(numLength)}`
+      numLength = pow - intLength;
+      const zero = `0.${_actions.zeros(numLength)}`;
       return parseFloat(zero + numString)
     }
     // 没有小数点时--不需要在前面加0
     if (numLength > pow) {
-      numLength -= pow
+      numLength -= pow;
       return parseFloat(`${numString.substr(0, numLength)}.${numString.substr(numLength)}`)
     }
     return parseFloat(`0.${_actions.zeros(pow - numLength)}${numString}`)
@@ -151,19 +157,19 @@ var _actions = {
    */
   calcPMExp: function(expression) {
     // 只剩加法和减法的操作，对表达式进行提取，统一转换为加法，减法变为加-的数
-    const expList = expression.split('+')
-    const params = []
+    const expList = expression.split('+');
+    const params = [];
     expList.forEach((item) => {
       // 提取减法
       if (/-/.test(item)) {
         item.split('-').forEach((e, index) => {
-          e = parseFloat(e)
-          params.push(index === 0 ? e : -e)
-        })
+          e = parseFloat(e);
+          params.push(index === 0 ? e : -e);
+        });
       } else {
-        params.push(parseFloat(item))
+        params.push(parseFloat(item));
       }
-    })
+    });
     return new Operation().oPlus(...params)
   },
   /**
@@ -174,16 +180,16 @@ var _actions = {
   calcExpression: function(expression) {
     // 乘号和除号的运算优先级高,依次递归处理
     if (/\*|\//.test(expression)) {
-      const result = /(\d|\.+)(\*|\/)(\d|\.+)/.exec(expression)
+      const result = /(\d|\.+)(\*|\/)(\d|\.+)/.exec(expression);
       if (result.length > 3) {
-        let val
-        const opera = new Operation()
+        let val;
+        const opera = new Operation();
         if (result[2] === '*') {
-          val = opera.oMultiple(result[1], result[3])
+          val = opera.oMultiple(result[1], result[3]);
         } else {
-          val = opera.oDivide(result[1], result[3])
+          val = opera.oDivide(result[1], result[3]);
         }
-        expression = expression.replace(result[0], val)
+        expression = expression.replace(result[0], val);
         return _actions.calcExpression(expression)
       }
     } else if (/\+|-/.test(expression)) {
@@ -191,7 +197,7 @@ var _actions = {
     }
     return parseFloat(expression)
   },
-}
+};
 /**
  * 操作的实例
  */
@@ -204,12 +210,12 @@ function Operation() {}
 Operation.prototype.oPlus = function(...args) {
   if (args.length === 0) return 0
   // 算出加数的最小整数倍
-  const multiple = _actions.getMultiple(...args)
+  const multiple = _actions.getMultiple(...args);
   const sum = args.reduce((res, num) => {
     return res + _actions.pointMove(num, multiple)
-  }, 0)
+  }, 0);
   return _actions.pointMove(sum, -multiple)
-}
+};
 /**
  * 乘法运算
  * @param {Number|Array} args - 需要相乘的数组
@@ -218,12 +224,12 @@ Operation.prototype.oPlus = function(...args) {
 Operation.prototype.oMultiple = function(...args) {
   if (args.length === 0) return 1
   // 算出加数的最小整数倍
-  const multiple = _actions.getMultiple(...args)
+  const multiple = _actions.getMultiple(...args);
   const result = args.reduce((res, num) => {
     return res * _actions.pointMove(num, multiple)
-  }, 1)
+  }, 1);
   return _actions.pointMove(result, -multiple * args.length)
-}
+};
 /**
  * 除法运算
  * 除法运算简化为：除数相乘后，再用被除数除以相乘的结果
@@ -232,9 +238,9 @@ Operation.prototype.oMultiple = function(...args) {
  * @return {Number} 返回计算结果
  */
 Operation.prototype.oDivide = function(val, num) {
-  const multiple = _actions.getMultiple(val, num)
+  const multiple = _actions.getMultiple(val, num);
   return _actions.pointMove(val, multiple) / _actions.pointMove(num, multiple)
-}
+};
 /**
  * 计算的表达式
  * @param {String} expression - 运算表达式
@@ -243,51 +249,51 @@ Operation.prototype.oDivide = function(val, num) {
 Operation.prototype.oFormul = function(expression) {
   // 先将（）内的运算递归出来
   if (/\(/.test(expression)) {
-    const result = /\(([^\(\)]+)\)/.exec(expression)
+    const result = /\(([^\(\)]+)\)/.exec(expression);
     if (result.length > 1) {
-      const value = this.oFormul(result[1])
-      expression = expression.replace(result[0], value)
+      const value = this.oFormul(result[1]);
+      expression = expression.replace(result[0], value);
       return this.oFormul(expression)
     }
   }
   // 计算出单纯的计算表达式，只包含+-*/
   return _actions.calcExpression(expression)
-}
+};
 /**
  * 计算对象
  * @param {Object} options - 配置参数
  */
 function Calc(options) {
-  options = options || {}
+  options = options || {};
   // 初始化的参数，默认为0
   if (toString.call(options).slice(8, -1).toLowerCase() === 'number') {
-    this.value = options
+    this.value = options;
   } else {
-    this.value = options.value || 0
+    this.value = options.value || 0;
   }
   // 错误信息
-  this.isError = false
-  this.errorMsg = null
+  this.isError = false;
+  this.errorMsg = null;
 }
 // 继承
-Calc.prototype = Object.create(Operation.prototype)
-Calc.prototype.constructor = Calc
+Calc.prototype = Object.create(Operation.prototype);
+Calc.prototype.constructor = Calc;
 /**
  * 算出当前的值
  * @return {Number} 值
  */
 Calc.prototype.val = function() {
   return this.value
-}
+};
 /**
  * 加法运算
  * @param {Number|Array} args - 需要相加的数组
  * @return {Calc} 返回当前实例
  */
 Calc.prototype.plus = function(...args) {
-  this.value = this.oPlus(...args, this.value)
+  this.value = this.oPlus(...args, this.value);
   return this
-}
+};
 /**
  * 减法运算，依次相减
  * 减法可以简化为：负数相加
@@ -295,22 +301,22 @@ Calc.prototype.plus = function(...args) {
  * @return {Calc} 返回当前实例
  */
 Calc.prototype.minus = function(...args) {
-  const newArgs = []
+  const newArgs = [];
   args.forEach((num) => {
-    newArgs.push(-num)
-  })
-  this.value = this.oPlus(this.value, ...newArgs)
+    newArgs.push(-num);
+  });
+  this.value = this.oPlus(this.value, ...newArgs);
   return this
-}
+};
 /**
  * 乘号运算
  * @param {Number|Array} args - 相乘的数组
  * @return {Calc} 返回当前实例
  */
 Calc.prototype.multiple = function(...args) {
-  this.value = this.oMultiple(...args, this.value)
+  this.value = this.oMultiple(...args, this.value);
   return this
-}
+};
 /**
  * 除法运算
  * 除法运算简化为：除数相乘后，再用被除数除以相乘的结果
@@ -318,27 +324,29 @@ Calc.prototype.multiple = function(...args) {
  * @return {Calc} 返回当前实例
  */
 Calc.prototype.divide = function(...args) {
-  const result = this.oMultiple(...args)
-  this.value = this.oDivide(this.value, result)
+  const result = this.oMultiple(...args);
+  this.value = this.oDivide(this.value, result);
   return this
-}
+};
 /**
  * 计算的表达式
  * @param {String} expression - 运算表达式
  * @return {Calc} 返回当前实例
  */
 Calc.prototype.formul = function(expression) {
-  expression = expression.replace(/\s/g, '')
+  expression = expression.replace(/\s/g, '');
   if (!_actions.isLegalExpression(expression)) {
-    this.isError = true
-    this.errorMsg = 'inLegla expression'
+    this.isError = true;
+    this.errorMsg = 'inLegla expression';
   } else {
-    this.isError = false
-    this.errorMsg = ''
+    this.isError = false;
+    this.errorMsg = '';
     // 按照运算符的优先级依次匹配出来
-    this.value = this.oFormul(expression)
+    this.value = this.oFormul(expression);
   }
   return this
-}
+};
 
-export default Calc
+return Calc;
+
+})));

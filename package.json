@@ -1,8 +1,8 @@
 {
-  "name": "calculate",
+  "name": "calculatejs",
   "version": "1.0.0",
   "description": "calculate in js",
-  "main": "index.js",
+  "main": "./dist/bundle.js",
   "author": "libin",
   "license": "MIT",
   "scripts": {
@@ -17,6 +17,7 @@
     "calc"
   ],
   "dependencies": {
-    "jest": "^22.0.4"
+    "jest": "^22.0.4",
+    "rollup": "^0.55.5"
   }
 }

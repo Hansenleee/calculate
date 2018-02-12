@@ -1,4 +1,4 @@
-const Calc = require('./index')
+const Calc = require('./dist/bundle')
 
 test('adds 1 + 2 to equal 3', ()=> {
   expect(new Calc().plus(1).plus(2).val()).toBe(3);
@@ -17,5 +17,5 @@ test('divide 6 / 2 to equal 3', ()=> {
 });
 
 test('divide 1 + 2 - 3 to equal 0', ()=> {
-  expect(new Calc().formul(2).val('1+2-3')).toBe(0);
+  expect(new Calc().formul('1+2-3').val()).toBe(0);
 });
